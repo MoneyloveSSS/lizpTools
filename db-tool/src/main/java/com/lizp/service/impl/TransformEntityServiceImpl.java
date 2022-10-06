@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,12 @@ public class TransformEntityServiceImpl<T, R> implements TransformEntityService<
 
     private TransformEntityConfig<T, R> transformEntityConfig;
 
+    private File outputFile;
+
+    private FileWriter fileWriter;
+
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
     @Override
     @SneakyThrows
     public void transform(TransformEntityConfig<T, R> transformEntityConfig) {
@@ -32,6 +39,8 @@ public class TransformEntityServiceImpl<T, R> implements TransformEntityService<
         File sourceExcel = new File(transformEntityConfig.getSourcePath());
         FileInputStream fileInputStream = new FileInputStream(sourceExcel);
         EasyExcelFactory.read(fileInputStream, transformEntityConfig.getOriginClass(), new ExcelListener(this)).sheet().doRead();
+
+        fileWriter.close();
     }
 
     @Override
@@ -39,9 +48,20 @@ public class TransformEntityServiceImpl<T, R> implements TransformEntityService<
     public void output(T sourceEntity) {
         R targetEntity = transformEntityConfig.getTransformFunc().apply(sourceEntity);
         String insertSql = generateSql(targetEntity);
+
+        String tableName = transformEntityConfig.getTargetClass().getAnnotation(TableName.class).value();
+        if (outputFile == null) {
+            outputFile = new File(transformEntityConfig.getOutputPath() + FILE_SEPARATOR + tableName);
+            if (!outputFile.exists()) {
+                outputFile.createNewFile();
+            }
+            fileWriter = new FileWriter(outputFile);
+        }
+
+        fileWriter.write(insertSql);
+        fileWriter.close();
+
     }
-
-
 
 
     private String generateSql(R targetEntity) throws IllegalAccessException {

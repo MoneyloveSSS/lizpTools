@@ -7,18 +7,17 @@ import com.lizp.service.TransformEntityService;
 /**
  * easy excel listener
  *
- * @param <T>
  * @author lizp4
  */
-public class ExcelListener extends AnalysisEventListener<Object> {
-    private TransformEntityService transformEntityService;
+public class ExcelListener<T, R> extends AnalysisEventListener<T> {
+    private final TransformEntityService<T, R> transformEntityService;
 
-    public ExcelListener(TransformEntityService transformEntityService) {
+    public ExcelListener(TransformEntityService<T, R> transformEntityService) {
         this.transformEntityService = transformEntityService;
     }
 
     @Override
-    public void invoke(Object data, AnalysisContext context) {
+    public void invoke(T data, AnalysisContext context) {
         transformEntityService.output(data);
     }
 

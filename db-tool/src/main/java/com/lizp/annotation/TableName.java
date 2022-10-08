@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.TYPE})
 public @interface TableName {
     /**
      * db table name

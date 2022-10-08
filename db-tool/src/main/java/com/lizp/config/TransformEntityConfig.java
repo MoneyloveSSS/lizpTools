@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Getter
 public class TransformEntityConfig<T, R> {
     /**
-     * Excel path
+     * source path
      */
     private final String sourcePath;
 

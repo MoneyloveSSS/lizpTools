@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2022-10-6 11:23
  * transfer A entity‘s excel to B entity by producing B's insert SQL
  */
-public class TransformEntityServiceImpl<T, R> implements TransformEntityService<T, R> {
+public class TransformEntityExcelService<T, R> implements TransformEntityService<T, R> {
 
     private TransformEntityConfig<T, R> transformEntityConfig;
 

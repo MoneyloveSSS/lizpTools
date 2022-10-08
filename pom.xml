@@ -18,6 +18,8 @@
         <commons-lang3.version>3.10</commons-lang3.version>
         <commons-collections4.version>4.2</commons-collections4.version>
         <lombok.version>1.18.24</lombok.version>
+        <junit.version>5.6.3</junit.version>
+        <easy-excel.version>2.2.6</easy-excel.version>
     </properties>
 
     <dependencyManagement>
@@ -37,6 +39,17 @@
                 <artifactId>lombok</artifactId>
                 <scope>compile</scope>
                 <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easy-excel.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

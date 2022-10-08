@@ -10,7 +10,6 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.List;
  * @date 2022-10-6 11:23
  * transfer A entity‘s excel to B entity by producing B's insert SQL
  */
-public class TransformEntityExcelService<T, R> implements TransformEntityService<T, R> {
+public class TransformEntityExcelServiceImpl<T, R> implements TransformEntityService<T, R> {
 
     private TransformEntityConfig<T, R> transformEntityConfig;
 
@@ -30,15 +29,14 @@ public class TransformEntityExcelService<T, R> implements TransformEntityService
     private FileWriter fileWriter;
 
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     @Override
     @SneakyThrows
     public void transform(TransformEntityConfig<T, R> transformEntityConfig) {
         this.transformEntityConfig = transformEntityConfig;
 
-        File sourceExcel = new File(transformEntityConfig.getSourcePath());
-        FileInputStream fileInputStream = new FileInputStream(sourceExcel);
-        EasyExcelFactory.read(fileInputStream, transformEntityConfig.getOriginClass(), new ExcelListener(this)).sheet().doRead();
+        EasyExcelFactory.read(transformEntityConfig.getSourcePath(), transformEntityConfig.getOriginClass(), new ExcelListener<T, R>(this)).sheet().doRead();
 
         fileWriter.close();
     }
@@ -51,7 +49,7 @@ public class TransformEntityExcelService<T, R> implements TransformEntityService
 
         String tableName = transformEntityConfig.getTargetClass().getAnnotation(TableName.class).value();
         if (outputFile == null) {
-            outputFile = new File(transformEntityConfig.getOutputPath() + FILE_SEPARATOR + tableName);
+            outputFile = new File(transformEntityConfig.getOutputPath() + FILE_SEPARATOR + tableName + ".txt");
             if (!outputFile.exists()) {
                 outputFile.createNewFile();
             }
@@ -59,8 +57,6 @@ public class TransformEntityExcelService<T, R> implements TransformEntityService
         }
 
         fileWriter.write(insertSql);
-        fileWriter.close();
-
     }
 
 
@@ -68,7 +64,10 @@ public class TransformEntityExcelService<T, R> implements TransformEntityService
         List<String> fieldNameList = new ArrayList<>(16);
         List<String> valueList = new ArrayList<>(16);
 
-        for (Field field : transformEntityConfig.getTargetClass().getFields()) {
+        for (Field field : transformEntityConfig.getTargetClass().getDeclaredFields()) {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
             TableField tableField = field.getAnnotation(TableField.class);
             String fieldName = tableField.value();
             if (StringUtils.isBlank(fieldName)) {
@@ -92,6 +91,6 @@ public class TransformEntityExcelService<T, R> implements TransformEntityService
             throw new UnsupportedOperationException("target class annotation TableName should not be empty");
         }
 
-        return "INSERT INTO" + tableName + "(" + fieldNameString + ") VALUES(" + valueString + ")";
+        return "INSERT INTO " + tableName + "(" + fieldNameString + ") VALUES(" + valueString + ");" + LINE_SEPARATOR;
     }
 }

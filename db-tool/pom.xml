@@ -12,6 +12,7 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+                <version>3.10.1</version>
             </plugin>
         </plugins>
     </build>

@@ -1,6 +1,7 @@
 package com.lizp.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.lizp.service.AbstractTransformEntityService;
@@ -18,6 +19,9 @@ import java.util.List;
  * transfer A entity‘ from JSON array to B entity by producing B's insert SQL
  */
 public class TransformEntityJsonServiceImpl<T, R> extends AbstractTransformEntityService<T, R> implements TransformEntityService<T, R> {
+    private ObjectMapper objectMapper;
+
+    private CollectionType collectionType;
 
     @Override
     @SneakyThrows
@@ -34,9 +38,18 @@ public class TransformEntityJsonServiceImpl<T, R> extends AbstractTransformEntit
         }
 
         String jsonString = jsonStringBuilder.toString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        CollectionType collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class, this.transformEntityConfig.getOriginClass());
+        if (objectMapper == null) {
+            initObjectMapper();
+        }
+
         List<T> originDataList = objectMapper.readValue(jsonString, collectionType);
         originDataList.forEach(super::output);
     }
+
+    private void initObjectMapper() {
+        this.objectMapper = new ObjectMapper();
+        this.collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class, this.transformEntityConfig.getOriginClass());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
 }

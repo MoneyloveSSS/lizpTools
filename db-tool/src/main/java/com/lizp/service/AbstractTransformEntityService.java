@@ -71,11 +71,11 @@ public abstract class AbstractTransformEntityService<T, R> implements TransformE
                 field.setAccessible(true);
             }
             TableField tableField = field.getAnnotation(TableField.class);
-            String fieldName = tableField.value();
-            if (StringUtils.isBlank(fieldName)) {
-                throw new UnsupportedOperationException("target class annotation TableField should not be empty");
+            if (tableField == null) {
+                throw new UnsupportedOperationException("target class annotation TableField should not be empty : field " + field.getName());
             }
 
+            String fieldName = tableField.value();
             Object value = field.get(targetEntity);
             if (value == null) {
                 continue;

@@ -1,9 +1,10 @@
 package com.lizp.transform;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lizp.annotation.TableField;
 import com.lizp.annotation.TableName;
-import com.lizp.client.TransformEntityExcelClient;
+import com.lizp.client.TransformEntityJsonClient;
 import com.lizp.config.TransformEntityConfig;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -12,12 +13,12 @@ import org.junit.jupiter.api.Test;
  * @author lizp4
  * @date 2022-10-8 10:09
  */
-class TransformEntityExcelTest {
+class TransformEntityJsonTest {
 
     @Test
     void testTransform() {
         TransformEntityConfig<Origin, Output> transformEntityConfig = TransformEntityConfig.<Origin, Output>builder()
-                .sourcePath("D:\\tmp\\2022-10-8.xlsx")
+                .sourcePath("D:\\tmp\\json.txt")
                 .originClass(Origin.class)
                 .outputPath("D:\\tmp")
                 .targetClass(Output.class)
@@ -27,7 +28,7 @@ class TransformEntityExcelTest {
                     output.setOutputGood(origin.getGood());
                     return output;
                 }).build();
-        TransformEntityExcelClient.transform(transformEntityConfig);
+        TransformEntityJsonClient.transform(transformEntityConfig);
     }
 
 
@@ -38,10 +39,10 @@ class TransformEntityExcelTest {
     @Data
     public static class Origin {
 
-        @ExcelProperty(value = "name")
+        @JsonProperty(value = "name")
         private String name;
 
-        @ExcelProperty(value = "is_good")
+        @JsonProperty(value = "is_good")
         private Integer good;
     }
 

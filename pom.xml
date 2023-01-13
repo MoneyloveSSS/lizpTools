@@ -22,6 +22,7 @@
         <lombok.version>1.18.24</lombok.version>
         <junit.version>5.6.3</junit.version>
         <easy-excel.version>2.2.6</easy-excel.version>
+        <jackson.version>2.4.3</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +53,11 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
                 <version>${easy-excel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

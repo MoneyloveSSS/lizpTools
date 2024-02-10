@@ -21,7 +21,7 @@
         <commons-collections4.version>4.2</commons-collections4.version>
         <lombok.version>1.18.24</lombok.version>
         <junit.version>5.6.3</junit.version>
-        <easy-excel.version>2.2.6</easy-excel.version>
+        <easy-excel.version>3.1.0</easy-excel.version>
         <jackson.version>2.4.3</jackson.version>
     </properties>
 
